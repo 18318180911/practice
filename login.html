@@ -6,15 +6,27 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <!--  引入 bootstrap的样式 -->
   <link rel="stylesheet" href="./assets/lib/bootstrap/bootstrap.min.css">
+   <!-- 引入 弹窗组件的样式 -->
   <link rel="stylesheet" href="./assets/lib/toastr/toastr.min.css">
+  <!-- 引入表单验证的样式 -->
   <link rel="stylesheet" href="./assets/lib/validator/bootstrapValidator.min.css">
+   <!-- 引入字体图标 -->
   <link rel="stylesheet" href="./assets/iconfont/iconfont.css">
+  <!-- 引入公共样式 -->
+  <link rel="stylesheet" href="./assets/css/common.css">
+  <!-- 引入登录页面自己的样式 -->
   <link rel="stylesheet" href="./assets/css/login.css">
 </head>
 
 <body>
 
+  <div class="vir-wrap">
+    <dic id="loadding" class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </dic>
+  </div>
   <div class="area">
     <div class="top">
       <img src="./assets/images/logo2.png" class="col-6" alt="">
@@ -76,13 +88,21 @@
     </div>
   </div>
 
-
+   <!-- 引入jq -->
   <script src="./assets/lib/jquery-3.6.0.min.js"></script>
+  <!-- 引入bootstrap -->
   <script src="./assets/lib/bootstrap/bootstrap.min.js"></script>
+  <!-- 引入 弹窗组件 -->
   <script src="./assets/lib/toastr/toastr.min.js"></script>
+   <!-- 引入表单验证  -->
   <script src="./assets/lib/validator/bootstrapValidator.min.js"></script>
+  <!-- 引入 发送网络请求 -->
   <script src="./assets/lib/axios.js"></script>
+  <!-- 引入 axios的设置   -->
+  <script src="./assets/utils/request.js"></script>
+   <!-- 引入弹窗 公共设置 -->
   <script src="./assets/utils/toastr.js"></script>
+   <!-- 引入登录页面的js -->
   <script src=".//assets/js/login.js"></script>
 
 </body>

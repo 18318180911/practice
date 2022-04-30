@@ -1,0 +1,16 @@
+#loadding{
+    width: 4vw;
+    height: 4vw;
+  }
+  .vir-wrap{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255,255,255,.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+  
+    display: none;
+  }
