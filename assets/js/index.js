@@ -1,29 +1,21 @@
-/**
- * 侧边导航关闭折叠控制
- */
+window.onload = function () {
+  // 获取一级菜单的a标签
+  const topAList = document.querySelectorAll('.nav>li>a');
+  topAList.forEach((aDom) =>
+    aDom.addEventListener('click', function () {
+      this.nextElementSibling.classList.toggle('show');
 
-function toggleSlide() {
-  $('.nav > li > a').on('click', function () {
-    let childMenu = $(this).next('ul');
-    childMenu.slideToggle(400);
-    let icon = childMenu.prev().find('.toggle');
-    if (icon.hasClass('open')) {
-      icon.removeClass('open').addClass('close');
-    } else {
-      icon.removeClass('close').addClass('open');
-    }
-  })
-
-  // 默认第一个菜单展开
-  $('.nav > li > a').eq(0).trigger('click');
-
-  // 所有子菜单切换时加背景色
-  $('.nav ul a').on('click', function () {
-    $(this).addClass('active')
-    $('.nav ul a').not($(this)).removeClass('active');
-  })
-
-}
-
-toggleSlide();
+    })
+  );
+  // 获取二级菜单的a标签
+  const subAList = document.querySelectorAll('.nav ul a');
+  subAList.forEach((aDom) =>
+    aDom.addEventListener('click', function () {
+  //     // 获取到 身上有active类的a标签 -> 移除它 这个 类
+      document.querySelector('.nav ul a.active').classList.remove('active');
+  //     // 再给自己添加 这个 active
+      this.classList.add('active');
+    })
+  );
+};
 

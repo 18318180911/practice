@@ -75,7 +75,9 @@ a {
   display: none;
 }
 
-
+.nav ul.show {
+  display: block;
+}
 @keyframes close {
   0% {
     transform: rotate(0deg);

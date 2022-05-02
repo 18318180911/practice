@@ -8,11 +8,14 @@ window.onload = function () {
     loginA.addEventListener('click', function () {
         console.log('登录');
         // 事件触发， 控制一个表单显示 另外一个表单隐藏 
+        // 隐藏登录 显示注册
         login.style.display = 'none';
         register.style.display = 'block';
     });
+     // 注册表单中的a 点击
     registerA.addEventListener('click', function () {
         console.log('登录');
+         // 隐藏注册 显示登录
         register.style.display = 'none';
         login.style.display = 'block';
     })
@@ -100,8 +103,16 @@ window.onload = function () {
     // 根据接口的要求 发送网络请求 完成登录
     axios.post('/api/login', { username, password }).then((result) => {
       console.log(result);
+      toastr.success(result.message);
+      localStorage.setItem('token', result.token);
+      setTimeout(() => {
+          location.href = './index.html'
+      }, 1500);
       // console.log("登录成功");
       //  调整到的在后台页面- 敏感数据
     });
+//     axios.get('/student/list').then((resutl) => {
+//         console.log(resutl);
+//       });
   });
 }
