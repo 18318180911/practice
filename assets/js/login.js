@@ -27,8 +27,9 @@ window.onload = function () {
         const username = loginForm.querySelector('input[name=username]').value.trim();
         const password = loginForm.querySelector('input[name=password]').value.trim();
         // 根据接口的要求 发送网络请求 完成登录
-        axios.post('http://www.itcbc.com:8000/api/login', { username, password }).then(result => {
+        axios.post('/api/login', { username, password }).then(result => {
             console.log(result);
+            // console.log('登录成功')
         })
     })
     //#endregion
