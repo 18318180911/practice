@@ -2,7 +2,7 @@ window.onload = function () {
     const tbody = document.querySelector('tbody');
     // 发送请求，获取数据，实现页面渲染
     getScoreList();
-    function getScoreList(calback) {
+    function getScoreList() {
         axios.get('./score/list').then((result) => {
             const obj = result.data;
             // 对obj遍历
@@ -14,11 +14,11 @@ window.onload = function () {
                 <tr>
                 <th scope="row">${key}</th>
                 <td>${value.name}</td>
-                <td class="score">${value.score[0]}<input type="text" /></td>
-                <td class="score">${value.score[1]}<input type="text" /></td>
-                <td class="score">${value.score[2]}<input type="text" /></td>
-                <td class="score">${value.score[3]}<input type="text" /></td>
-                <td class="score">${value.score[4]}<input type="text" /></td>
+                <td class="score">${value.score[0]}<input data-batch="1" data-stu_id="${key}" type="text" /></td>
+                <td class="score">${value.score[1]}<input data-batch="2" data-stu_id="${key}" type="text" /></td>
+                <td class="score">${value.score[2]}<input data-batch="3" data-stu_id="${key}" type="text" /></td>
+                <td class="score">${value.score[3]}<input data-batch="4" data-stu_id="${key}" type="text" /></td>
+                <td class="score">${value.score[4]}<input data-batch="5" data-stu_id="${key}" type="text" /></td>
                 </tr>
                 `;
             }
@@ -34,7 +34,7 @@ window.onload = function () {
              console.log('业务'); //让td 里面的input标签 显示出来
             const td = event.target;
             const input = td.querySelector('input');
-            input.style.dislay = 'block';
+            input.style.display = 'block';
             // 让input标签显示td内容
             input.value = td.innerText;
             // 设置输入框自动获得光标的方法
@@ -47,7 +47,16 @@ window.onload = function () {
         inputList.forEach((input) => 
         input.addEventListener('blur', function () {
             console.log('input失去焦点了');
-            this.style.display = 'none';
+            // this.style.display = 'none';
+            const { stu_id, batch } = this.dataset;
+            const score = this.value;
+            axios.post('./score/entry', { stu_id, batch, score}).then((result) => {
+                // console.log(result);
+                // getScoreList(function () {
+                //     this.style.display = 'none';
+                // });
+                getScoreList();
+            })
         }));
     }
 };
