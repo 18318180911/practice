@@ -17,4 +17,4 @@ const common = {
             document.querySelector('.vir-wrap').remove();
         },
     },
-}
+};

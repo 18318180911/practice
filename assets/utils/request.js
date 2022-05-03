@@ -4,6 +4,9 @@ axios.defaults.baseURL = 'http://www.itcbc.com:8000';
 axios.interceptors.request.use(function (config) {
     // document.querySelector('.vir-wrap').style.display = 'flex';
     common.load.show();
+    if (localStorage.getItem('token')) {
+        config.headers.authorization = localStorage.getItem('token');
+      }
     return config;
 }, function (error) {
     // 对请求错误做些什么

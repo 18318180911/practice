@@ -1,0 +1,55 @@
+option = {
+    title: {
+      text: 'Stacked Line'
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      data: ['Email', 'Union Ads']
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '50%',
+      containLabel: true
+    },
+     dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        start: 0,
+        end: 20,
+        // xAxisIndex: [0, 1]
+      }],
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        name: 'Email',
+        type: 'line',
+        symbol: 'circle',
+        smooth: true,
+        data: [120, 132, 101, 734, 90, 230, 210],
+        itemStyle : {
+          color: '#ee6666',
+        },
+      },
+      {
+        name: 'Union Ads',
+        type: 'line',
+         symbol: 'circle',
+          smooth: true,
+        data: [220, 132, 101, 234, 290, 330, 310],
+        itemStyle: {
+          color: '#5470c6',
+        }
+      }
+    ]
+  };
