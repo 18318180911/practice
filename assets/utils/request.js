@@ -17,7 +17,7 @@ axios.interceptors.response.use(function (response) {
     console.log("http状态码 正常 业务码可能正确-错误");
     // document.querySelector('.vir-wrap').style.display = 'none';
     common.load.hide();
-    if (response.data.code !== 0) {
+    if (response.data.code !== undefined && response.data.code !== 0) {
         // 不正常业务码
         toastr.error(response.data.message);
         return Promise.reject(response); 
@@ -28,7 +28,10 @@ axios.interceptors.response.use(function (response) {
     // 对响应错误做点什么  http不正确的时候 就会触发 
     console.log('http状态码不正确');
     if (error.response.status === 401) {
-        location.href = './login.html';
+        // token失效没有携带登录过
+        // location.href = './login.html';
+        // window.top获取到最外层的window，对象
+        window.top.location.href = './login.html';
     }
     // message 后端返回的错误信息
     toastr.error(error.response.data.message);
