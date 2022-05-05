@@ -53,3 +53,67 @@ option = {
       }
     ]
   };
+// 柱状图
+  option = {
+    legend: {},
+    tooltip: {},
+    dataset: {
+      dimensions: ['product', '平均分', '低于60分人数', '60到80分之间', '高于80分人数'],
+      source: [
+        { product: '1组', 平均分: 43.3, 低于60分人数: 85.8, 60到80分之间: 93.7 },
+        { product: '2组', 平均分: 83.1, 低于60分人数: 73.4, 60到80分之间: 55.1 },
+        { product: '3组', 平均分: 86.4, 低于60分人数: 65.2, 60到80分之间: 82.5 },
+        { product: '4组', 平均分: 72.4, 低于60分人数: 53.9, 60到80分之间: 39.1 }
+      ]
+    },
+    xAxis: { type: 'category' },
+     yAxis: [
+      {
+        type: 'value',
+        // name: 'Precipitation',
+        min: 0,
+        max: 100,
+        interval: 10,
+        axisLabel: {
+          formatter: '{value}分'
+        }
+      },
+      {
+        type: 'value',
+        // name: 'Temperature',
+        min: 0,
+        max: 10,
+        interval: 1,
+        axisLabel: {
+          formatter: '{value} 人'
+        }
+      }
+    ],
+    series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }, {type: 'bar'}]
+  };
+
+// 玫瑰图
+  option = {
+    series: [
+      {
+        name: 'Nightingale Chart',
+        type: 'pie',
+        radius: [50, 250],
+        center: ['50%', '50%'],
+        roseType: 'area',
+        itemStyle: {
+          borderRadius: 8
+        },
+        data: [
+          { value: 40, name: 'rose 1' },
+          { value: 38, name: 'rose 2' },
+          { value: 32, name: 'rose 3' },
+          { value: 30, name: 'rose 4' },
+          { value: 28, name: 'rose 5' },
+          { value: 26, name: 'rose 6' },
+          { value: 22, name: 'rose 7' },
+          { value: 18, name: 'rose 8' }
+        ]
+      }
+    ]
+  };

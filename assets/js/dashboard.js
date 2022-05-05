@@ -10,14 +10,46 @@ window.onload = function () {
             document.querySelector('.proportion').innerText = proportion;
         });
     }
+  
     // 获取全部学员信息
     getStudentList();
     function getStudentList() {
         axios.get('/student/list').then((result) => {
             const arr = result.data;
+            const pieData = [];
+            arr.forEach(item => {
+              let i;
+              if ((i = pieData.findIndex(v => v.name === item.province)) >= 0) {
+                pieData[i].value++;
+              }
+              else {
+                pieData.push({ value: 1, name: item.province });
+              }
+            });
+            // console.log(pieData)
             renderLine(arr);
+            pieChart(pieData);
+            // barChart(arr);
         });
     }
+    // 柱状图
+    getStudentScore();
+    function getStudentScore() {
+      // const btn = document.querySelector('.btn');
+      // const batch = document.querySelector('#batch');
+      // btn.addEventListener('click', function () {
+      //   batch.toggle();
+      // })
+      axios.get('score/batch', { params: {batch :2}}).then((result) => {
+        console.log(result)
+        if (result.code === 0) {
+          barChart(result.data);
+        }
+      })
+    };
+    //地图
+
+    //折线图
     function renderLine(arr) {
         const myChart = echarts.init(document.querySelector('.line'));
         const  salaryList = arr.map((value) => value.salary);
@@ -76,5 +108,127 @@ window.onload = function () {
             ]
           };
           myChart.setOption(option);
-    }
+    };
+    // 柱状图
+    function barChart({ avgScore, group, gt60, lt60, gt80 }) {
+      const myChart = echarts.init(document.querySelector('.barChart'));
+      let option = {
+        // 网格（整个图表区域设置）
+        grid: {
+          top: 30,
+          bottom: 30,
+          left: '7%',
+          right: '7%'
+        },
+        // 鼠标移入的提示
+        tooltip: {
+          trigger: 'axis', // 触发方式，axis表示轴触发，item表示每一项
+          axisPointer: { // 坐标轴指示器配置项
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        legend: {},
+        xAxis: [
+          {
+            type: 'category',
+            data: group,
+            // data: ['1组', '2组', '3组', '4组', '5组', '6组', '7组'],
+            axisPointer: { // 坐标轴指示器为阴影，配合tooltip中的设置，组成十字准星
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            min: 0,
+            max: 100,
+            interval: 10,
+            axisLabel: {
+              formatter: '{value}分',
+            }
+          },
+          {
+            type: 'value',
+            min: 0,
+            max: 10,
+            interval: 1,
+            axisLabel: {
+              formatter: '{value} 人',
+            }
+          }
+        ],
+        // 数据部分（4组数据）
+        series: [
+          {
+            name: '平均分',
+            type: 'bar',
+            data: avgScore,
+            // data: [83, 57, 90, 78, 66, 76, 77, 87, 69, 92, 88, 78],
+            barWidth: '15',
+          },
+          {
+            name: '低于60分人数',
+            type: 'bar',
+            data: lt60,
+            // data: [2, 1, 3, 4, 2, 5, 2, 2, 4, 1, 6, 2],
+            barWidth: '15',
+            yAxisIndex: 1, // Y轴索引，1表示使用第2个Y轴
+          },
+          {
+            name: '60到80分之间',
+            type: 'bar',
+            yAxisIndex: 1, // Y轴索引，1表示使用第2个Y轴
+            barWidth: '15',
+            // data: [1, 4, 2, 4, 5, 2, 1, 3, 3, 2, 2, 4]
+            data: gt60
+          }
+          ,
+          {
+            name: '高于80分人数',
+            type: 'bar',
+            yAxisIndex: 1, // Y轴索引，1表示使用第2个Y轴
+            barWidth: '15',
+            // data: [3, 2, 1, 5, 1, 2, 3, 4, 5, 2, 2, 4]
+            data: gt80
+          }
+        ]
+      };
+    myChart.setOption(option);
+  };
+  // 地图
+  
+  // 饼图
+  function pieChart(pieData) {
+    const myChart = echarts.init(document.querySelector('.pie'));
+    let option = {
+      tooltip: {
+        formatter: '{a} <br />{b} <strong>{c}</strong>人 占比{d}%'
+      },
+      title: {
+        text: '籍贯 Hometown',
+        textStyle: {
+          color: '#6d767e'
+        },
+      },
+      series: [
+        {
+          name: '各地人员分布',
+          type: 'pie', // pie 表示饼图
+          radius: ['10%', '65%'], // 内外圈的半径
+          center: ['50%', '50%'], // 中心点
+          roseType: 'area', // area表示面积模式，radius表示半径模式
+          itemStyle: { // 每一项的设置
+            borderRadius: 4, // 扇形边缘圆角设置
+          },
+          data: pieData
+        }
+      ]
+    };
+    myChart.setOption(option)
+  }
+
 }
