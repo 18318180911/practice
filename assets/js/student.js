@@ -17,8 +17,8 @@ window.onload = function () {
             <td>${value.truesalary}</td>
             <td>${value.province + value.city + value.county}</td>
             <td>
-                <button type="button" class="btn btn-primary btn-sm">修改</button>
-                <button type="button" class="btn btn-danger btn-sm">删除</button>
+                <button data-id=${value.id} type="button" class="btn btn-primary btn-sm update">修改</button>
+                <button data-id="${value.id}" type="button" class="btn btn-danger btn-sm del">删除</button>
             </td>
             </tr>
             `)
@@ -169,7 +169,6 @@ window.onload = function () {
             province.innerHTML = html;
         });
         // 给省下拉列表绑定change事件
-        
         province.addEventListener('change', function () {
             // console.log("当前内容：",this.value)
             // 当没有选择省份的时候，不再发送网络请求，重置市和县
@@ -218,4 +217,55 @@ window.onload = function () {
     document.querySelector('#studentAdd').addEventListener('click', function () {
         document.querySelector('.add-form').reset();
     });
+    // 修改
+    // 修改学员 --- 数据回填
+    // 1.点击修改按钮
+    $('tbody').on('click', '.update', function () {
+        let id = $(this).data('id');
+        // 发送请求，获取该学员的信息
+        axios.get('/student/one', { params: { id } }).then((result) => {
+            if (result.code === 0) {
+            // console.log(res.data);
+            // 得到数据后，设置每个输入框的value值。下拉框和单项按钮需设置选中状态。
+            let { name, age, sex, group, phone, id, salary, truesalary, province, city, county } = result.data;
+            $('#updateModal input[name=id]').val(id);
+            $('#updateModal input[name=name]').val(name);
+            $('#updateModal input[name=age]').val(age);
+            $('#updateModal input[name=sex][value=' + sex + ']').prop('checked', true);
+            $('#updateModal input[name=phone]').val(phone);
+            $('#updateModal input[name=salary]').val(salary);
+            $('#updateModal input[name=truesalary]').val(truesalary);
+            $('#updateModal select[name=group]').children('[value=' + group + ']').prop('selected', true);
+            $('#updateModal select[name=province]').html(`<option value="${province}">${province}</option>`);
+            $('#updateModal select[name=city]').html(`<option value="${city}">${city}</option>`);
+            $('#updateModal select[name=county]').html(`<option value="${county}">${county}</option>`);
+            $('#updateModal').modal('show'); // 这行的意思是让模态框显示
+            }
+        })
+    });
+    // 修改学员 --- 确认修改
+    $('.update-form').bootstrapValidator(test()).on('success.form.bv', function (e) {
+        e.preventDefault();
+        //提交逻辑
+        // console.log(222);
+        let data = $(this).serialize();
+        // console.log(data);
+        axios.put('/student/update', data).then((result) => {
+        // console.log(res);
+        if (result.code === 0) {
+            toastr.success(result.message);
+            getStudentList();
+            $('#updateModal').modal('hide')
+        }
+        })
+    });
+
+    // 删除学员
+    $('tbody').on('click', '.del', function () {
+        if (!confirm('你确定要删除吗？')) return;
+        let id = $(this).data('id');
+        axios.delete('/student/delete', { params: { id } }).then((result) => {
+            if (result.code === 0) toastr.success(result.message); getStudentList();
+        })
+    })
 }
