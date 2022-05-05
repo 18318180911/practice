@@ -16,8 +16,14 @@ window.onload = function () {
     function getStudentList() {
         axios.get('/student/list').then((result) => {
             const arr = result.data;
+            // 地图，第一组数据
+            let chinaGeoCoordMap = { '北京市': [116.4551, 40.2539] };
+            // 地图，第二组数据
+            let chinaDatas = []
             const pieData = [];
             arr.forEach(item => {
+              chinaGeoCoordMap[item.county] = [item.jing, item.wei];
+              chinaDatas.push([{name: item.county, value: 0}]);
               let i;
               if ((i = pieData.findIndex(v => v.name === item.province)) >= 0) {
                 pieData[i].value++;
@@ -29,6 +35,7 @@ window.onload = function () {
             // console.log(pieData)
             renderLine(arr);
             pieChart(pieData);
+            mapChart(chinaGeoCoordMap, chinaDatas);
             // barChart(arr);
         });
     }
@@ -197,10 +204,152 @@ window.onload = function () {
           }
         ]
       };
-    myChart.setOption(option);
-  };
-  // 地图
-  
+      myChart.setOption(option);
+    };
+
+    // 地图
+    function mapChart(chinaGeoCoordMap, chinaDatas) {
+      const myChart = echarts.init(document.querySelector('.map'));
+      var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+          var dataItem = data[i];
+          var fromCoord = chinaGeoCoordMap[dataItem[0].name];
+         var toCoord = [116.4551, 40.2539]; // 目标点 经纬度（北京市）
+          if (fromCoord && toCoord) {
+            res.push([{
+              coord: fromCoord,
+              value: dataItem[0].value
+            }, {
+              coord: toCoord,
+            }]);
+          }
+        }
+        return res;
+      };
+      var planePath =
+        "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
+      //航线的颜色
+      var color = ["#a6c84c", "#ffa022", "#46bee9"];
+      var series = [];
+      [['北京市', chinaDatas]]
+      .forEach(function(item, i)
+      {
+        series.push(
+          {
+            name: item[0],
+            type: "lines",
+            zlevel: 1,
+            effect: {
+              period: 6,
+              trailLength: 0.7,
+              symbolSize: 3
+            },
+            lineStyle: {
+              normal: {
+                color: color[i],
+                width: 0,
+                curveness: 0.2
+              }
+            },
+            data: convertData(item[1])
+          },
+          {
+            name: item[0],
+            type: "lines",
+            zlevel: 2,
+            symbol: ["none", "arrow"],
+            symbolSize: 10,
+            effect: {
+              show: true,
+              period: 6,
+              trailLength: 0,
+              symbol: planePath,
+              symbolSize: 15
+            },
+            lineStyle: {
+              normal: {
+                color: color[i],
+                width: 1,
+                opacity: 0.6,
+                curveness: 0.2
+              }
+            },
+            data: convertData(item[1])
+          },
+          {
+            name: item[0],
+            type: "effectScatter",
+            coordinateSystem: "geo",
+            zlevel: 2,
+            rippleEffect: {
+              brushType: "stroke"
+            },
+            label: {
+              normal: {
+                show: true,
+                position: "right",
+                formatter: "{b}"
+              }
+            },
+            symbolSize: function(val) {
+              return val[2] / 8;
+            },
+            itemStyle: {
+              normal: {
+                color: color[i]
+              },
+              emphasis: {
+                areaColor: "#2B91B7"
+              }
+            },
+          }
+        );
+      });
+      var option = {
+        tooltip: {
+          // 数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用
+          trigger: "item",
+        },
+        legend: {
+          // 图例列表布局朝向垂直
+          orient: "vertical",
+          top: "bottom",
+          left: "right",
+          data: ["北京 Top3", "上海 Top3", "广州 Top3"],
+          textStyle: {
+            color: "#fff"
+          }
+        },
+        geo: {
+          map: "china",
+          label: {
+            emphasis: {
+              // 是否显示省区的名字
+              show: true,
+              color: "#fff"
+            }
+          },
+          // 把中国地图放大了1.2倍
+          zoom: 1.2,
+          roam: true,
+          itemStyle: {
+            normal: {
+              // 地图省份的背景颜色
+              areaColor: "#92959e",
+              borderColor: "#eeeeee",
+              borderWidth: 1
+            },
+            emphasis: {
+              areaColor: "#2B91B7"
+            }
+          }
+        },
+        series: series
+      };
+      myChart.setOption(option)
+    }
+
   // 饼图
   function pieChart(pieData) {
     const myChart = echarts.init(document.querySelector('.pie'));
@@ -230,5 +379,4 @@ window.onload = function () {
     };
     myChart.setOption(option)
   }
-
 }
