@@ -43,9 +43,21 @@ window.onload = function () {
       });
   };
   // 下拉菜单
-$('.bar .btn').on('click', function () {
-  $(this).next('ul').toggle();
-})
+// $('.bar .btn').on('click', function () {
+//   $(this).next('ul').toggle();
+// })
+const btn = document.querySelector('.btn');
+// const ul = document.querySelector('.btn ul')
+//给那三个点加一个点击事件，点击后，让下一个兄弟元素ui切换状态（隐藏/显示）
+btn.addEventListener('click', function() {
+  let _ul = this.nextElementSibling;
+  if(_ul.style.display == "none") {
+    _ul.style.display = "block";
+  }else {
+    _ul.style.display = "none";
+  }
+  // $(this).next('ul').toggle(); 
+});
 
 // 点击 “第n次成绩” 按钮，获取该次考试成绩
 $('#batch li').on('click', function () {
