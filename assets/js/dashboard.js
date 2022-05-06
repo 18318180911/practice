@@ -41,7 +41,28 @@ window.onload = function () {
           mapChart(chinaGeoCoordMap, chinaDatas);
           // barChart(arr);
       });
-  }
+  };
+  // 下拉菜单
+$('.bar .btn').on('click', function () {
+  $(this).next('ul').toggle();
+})
+
+// 点击 “第n次成绩” 按钮，获取该次考试成绩
+$('#batch li').on('click', function () {
+  // 取得当前li元素在兄弟间的位置，即索引，加1后，刚好当做考试次数
+  let batch = $(this).index() + 1; 
+  $(this).parent().hide(); // 让ul列表隐藏，这行也可以省略，即不隐藏
+  axios.get('/score/batch', { params: { batch:2 } }).then(({ data: res }) => {
+    let { data, code } = res;
+    if (code === 0) {
+      // console.log(data);
+      barChart(data);
+    }
+  })
+})
+
+// 页面加载后，触发第一个li的单击事件
+$('#batch li').eq(0).trigger('click');
   // 柱状图
   getStudentScore();
   function getStudentScore() {
