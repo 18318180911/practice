@@ -3,6 +3,11 @@ window.onload = function () {
   const topAList = document.querySelectorAll('.nav>li>a');
   topAList.forEach((aDom) =>
     aDom.addEventListener('click', function () {
+      // 根据被点击的a标签的获取到下一个ul标签
+      // 下一个兄弟元素dom.nextElementSibling
+      // this.nexrElementSibling获取到了ul
+      // 只能获取到dom元素的行内样式，无法直接获取到dom元素通过class设置的样式
+      // console.log(this.nexrElementSibling.style.display);
       this.nextElementSibling.classList.toggle('show');
     })
   );

@@ -103,7 +103,10 @@ window.onload = function () {
     // 根据接口的要求 发送网络请求 完成登录
     axios.post('/api/login', { username, password }).then((result) => {
       console.log(result);
+      // 跳转页面
+      // 提醒用户登录成功
       toastr.success(result.message);
+      // 把令牌token存一份到本地存储中
       localStorage.setItem('token', result.token);
       setTimeout(() => {
           location.href = './index.html'

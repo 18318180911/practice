@@ -23,7 +23,9 @@ window.onload = function () {
           const pieData = [];
           arr.forEach(item => {
             chinaGeoCoordMap[item.county] = [item.jing, item.wei];
+            // 通过push把转换后的数据，添加到数组中
             chinaDatas.push([{name: item.county, value: 0}]);
+            // 饼图
             let i;
             if ((i = pieData.findIndex(v => v.name === item.province)) >= 0) {
               pieData[i].value++;
@@ -32,6 +34,7 @@ window.onload = function () {
               pieData.push({ value: 1, name: item.province });
             }
           });
+          console.log(chinaDatas)
           // console.log(pieData)
           renderLine(arr);
           pieChart(pieData);
@@ -42,11 +45,6 @@ window.onload = function () {
   // 柱状图
   getStudentScore();
   function getStudentScore() {
-    // const btn = document.querySelector('.btn');
-    // const batch = document.querySelector('#batch');
-    // btn.addEventListener('click', function () {
-    //   batch.toggle();
-    // })
     axios.get('score/batch', { params: {batch :2}}).then((result) => {
       console.log(result)
       if (result.code === 0) {
@@ -215,7 +213,7 @@ window.onload = function () {
       for (var i = 0; i < data.length; i++) {
         var dataItem = data[i];
         var fromCoord = chinaGeoCoordMap[dataItem[0].name];
-       var toCoord = [116.4551, 40.2539]; // 目标点 经纬度（北京市）
+        var toCoord = [116.4551, 40.2539]; // 目标点 经纬度（北京市）
         if (fromCoord && toCoord) {
           res.push([{
             coord: fromCoord,
@@ -227,126 +225,150 @@ window.onload = function () {
       }
       return res;
     };
-    var planePath =
-      "path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z";
-    //航线的颜色
-    var color = ["#a6c84c", "#ffa022", "#46bee9"];
     var series = [];
-    [['北京市', chinaDatas]]
-    .forEach(function(item, i)
-    {
-      series.push(
-        {
-          name: item[0],
-          type: "lines",
-          zlevel: 1,
-          effect: {
-            period: 6,
-            trailLength: 0.7,
-            symbolSize: 3
-          },
-          lineStyle: {
-            normal: {
-              color: color[i],
-              width: 0,
-              curveness: 0.2
-            }
-          },
-          data: convertData(item[1])
-        },
-        {
-          name: item[0],
-          type: "lines",
+	[['北京市', chinaDatas]].forEach(function(item, i) {
+	    console.log(item)
+      series.push({
+          type: 'lines',
           zlevel: 2,
-          symbol: ["none", "arrow"],
-          symbolSize: 10,
           effect: {
             show: true,
-            period: 6,
-            trailLength: 0,
-            symbol: planePath,
-            symbolSize: 15
+            period: 4, //箭头指向速度，值越小速度越快
+            trailLength: 0.02, //特效尾迹长度[0,1]值越大，尾迹越长重
+            symbol: 'arrow', //箭头图标
+            symbolSize: 5, //图标大小
           },
           lineStyle: {
             normal: {
-              color: color[i],
-              width: 1,
-              opacity: 0.6,
-              curveness: 0.2
+              width: 1, //尾迹线条宽度
+              opacity: 1, //尾迹线条透明度
+              curveness: .3 //尾迹线条曲直度
             }
           },
           data: convertData(item[1])
-        },
-        {
-          name: item[0],
-          type: "effectScatter",
-          coordinateSystem: "geo",
+        }, {
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
           zlevel: 2,
-          rippleEffect: {
-            brushType: "stroke"
+          rippleEffect: { //涟漪特效
+            period: 4, //动画时间，值越小速度越快
+            brushType: 'stroke', //波纹绘制方式 stroke, fill
+            scale: 4 //波纹圆环最大限制，值越大波纹越大
           },
           label: {
             normal: {
               show: true,
-              position: "right",
-              formatter: "{b}"
+              position: 'right', //显示位置
+              offset: [5, 0], //偏移设置
+              formatter: function(params){//圆环显示文字
+                return params.data.name;
+              },
+              fontSize: 13
+            },
+            emphasis: {
+              show: true
             }
           },
+          symbol: 'circle',
           symbolSize: function(val) {
-            return val[2] / 8;
+            return 5+ val[2] * 5; //圆环大小
           },
           itemStyle: {
             normal: {
-              color: color[i]
-            },
-            emphasis: {
-              areaColor: "#2B91B7"
+              show: false,
+              color: '#f00'
             }
           },
+          data: item[1].map(function(dataItem) {
+            return {
+              name: dataItem[0].name,
+              value: chinaGeoCoordMap[dataItem[0].name].concat([dataItem[0].value])
+            };
+          }),
+        },
+        //被攻击点
+        {
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: {
+            period: 4,
+            brushType: 'stroke',
+            scale: 4
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right',
+              //offset:[5, 0],
+              color: '#0f0',
+              formatter: '{b}',
+              textStyle: {
+                color: "#0f0"
+              }
+            },
+            emphasis: {
+              show: true,
+              color: "#f60"
+            }
+          },
+          symbol: 'pin',
+          symbolSize: 50,
+          data: [{
+            name: item[0],
+            value: chinaGeoCoordMap[item[0]].concat([10]),
+          }],
         }
       );
-    });
-    var option = {
-      tooltip: {
-        // 数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用
-        trigger: "item",
-      },
-      legend: {
-        // 图例列表布局朝向垂直
-        orient: "vertical",
-        top: "bottom",
-        left: "right",
-        data: ["北京 Top3", "上海 Top3", "广州 Top3"],
-        textStyle: {
-          color: "#fff"
-        }
-      },
-      geo: {
-        map: "china",
-        label: {
-          emphasis: {
-            // 是否显示省区的名字
-            show: true,
-            color: "#fff"
-          }
-        },
-        // 把中国地图放大了1.2倍
-        zoom: 1.2,
-        roam: true,
-        itemStyle: {
-          normal: {
-            // 地图省份的背景颜色
-            areaColor: "#92959e",
-            borderColor: "#eeeeee",
-            borderWidth: 1
-          },
-          emphasis: {
-            areaColor: "#2B91B7"
-          }
-        }
-      },
-      series: series
-    };
+	});
+
+	option = {
+    title: {
+      text: '来京路线 From',
+      textStyle: {
+        color: '#6d767e'
+      }
+    },
+		tooltip: {
+			trigger: 'item',
+			backgroundColor: '#eeeeee',
+			borderColor: '#eeeeee',
+			showDelay: 0,
+			hideDelay: 0,
+			enterable: true,
+			transitionDuration: 0,
+			extraCssText: 'z-index:100',
+			formatter: function(params, ticket, callback) {
+				//根据业务自己拓展要显示的内容
+				var res = "";
+				var name = params.name;
+				var value = params.value[params.seriesIndex + 1];
+				res = "<span style='color:#fff;'>" + name + "</span><br/>数据：" + value;
+				return res;
+			}
+		},
+		geo: {
+			map: 'china',
+			zoom: 1.2,
+			label: {
+				emphasis: {
+					show: false
+				}
+			},
+			roam: true, //是否允许缩放
+			itemStyle: {
+				normal: {
+					color: '#eeeeee', //地图背景色
+					borderColor: '#516a89', //省市边界线00fcff 516a89
+					borderWidth: 1
+				},
+				emphasis: {
+					color: 'rgba(37, 43, 61, .5)' //悬浮背景
+				}
+			}
+		},
+		series: series
+	};
     myChart.setOption(option)
   }
 
