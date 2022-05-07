@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <input type="text" name="username">
+        <button>提交</button>
+        <button type="submit">提交</button>
+    </form>
+    <script>
+        // 解决表单自动刷新
+        // 方式1：阻止表单默认行为
+        // const button = document.querySelector('button');
+        // button.addEventListener('click', function(e) {
+        //     // 阻止表单默认行为
+        //     e.preventDefault();
+        // });
+        // 方法2：给表单绑定提交事件：submit
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('提交')
+        })
+    </script>
+</body >
+</html>

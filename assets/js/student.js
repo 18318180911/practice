@@ -181,7 +181,6 @@ window.onload = function () {
             }
             // console.log("还没有内容")
             // 1.获取中国省份
-
             axios.get('/geo/city', { params: { pname: this.value } }).then((result) => {
                 // console.log("==" + result)
                 // 渲染市的数据

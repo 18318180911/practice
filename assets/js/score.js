@@ -5,9 +5,10 @@ window.onload = function () {
     function getScoreList() {
         axios.get('./score/list').then((result) => {
             const obj = result.data;
-            // 对obj遍历
+            // 对obj遍历forin
             let html = ``;
             for (const key in obj) {
+                // value key对应的值
                 const value = obj[key];
                 console.log(value);
                 html +=`

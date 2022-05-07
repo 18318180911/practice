@@ -1,4 +1,5 @@
 window.onload = function () {
+  //#region 获得班级概况数据
   getStudentOverview();
   function getStudentOverview() {
       axios.get('./student/overview').then((result) => {
@@ -10,6 +11,7 @@ window.onload = function () {
           document.querySelector('.proportion').innerText = proportion;
       });
   }
+  //#endregion
 
   // 获取全部学员信息
   getStudentList();
@@ -17,7 +19,7 @@ window.onload = function () {
       axios.get('/student/list').then((result) => {
           const arr = result.data;
           // 地图，第一组数据
-          let chinaGeoCoordMap = { '北京市': [116.4551, 40.2539] };
+          let chinaGeoCoordMap = { '顺义校区': [116.4551, 40.2539] };
           // 地图，第二组数据
           let chinaDatas = []
           const pieData = [];
@@ -34,10 +36,12 @@ window.onload = function () {
               pieData.push({ value: 1, name: item.province });
             }
           });
-          console.log(chinaDatas)
-          // console.log(pieData)
+          // console.log(chinaDatas)
+          // 折线图
           renderLine(arr);
+          // 饼图
           pieChart(pieData);
+          // 地图
           mapChart(chinaGeoCoordMap, chinaDatas);
           // barChart(arr);
       });
@@ -71,8 +75,7 @@ $('#batch li').on('click', function () {
       barChart(data);
     }
   })
-})
-
+});
 // 页面加载后，触发第一个li的单击事件
 $('#batch li').eq(0).trigger('click');
   // 柱状图
@@ -90,8 +93,11 @@ $('#batch li').eq(0).trigger('click');
   //折线图
   function renderLine(arr) {
       const myChart = echarts.init(document.querySelector('.line'));
+      // 期望薪资
       const  salaryList = arr.map((value) => value.salary);
+      // 实际薪资
       const trueSalaryList = arr.map((value) => value.truesalary);
+      // 学生名字
       const names = arr.map((value) => value.name);
       // 指定图标
       option = {
@@ -259,179 +265,179 @@ $('#batch li').eq(0).trigger('click');
       return res;
     };
     var series = [];
-	[['北京市', chinaDatas]].forEach(function(item, i) {
-	    console.log(item)
-      series.push({
-          type: 'lines',
-          zlevel: 2,
-          effect: {
-            show: true,
-            period: 4, //箭头指向速度，值越小速度越快
-            trailLength: 0.02, //特效尾迹长度[0,1]值越大，尾迹越长重
-            symbol: 'arrow', //箭头图标
-            symbolSize: 5, //图标大小
-          },
-          lineStyle: {
-            normal: {
-              width: 1, //尾迹线条宽度
-              opacity: 1, //尾迹线条透明度
-              curveness: .3 //尾迹线条曲直度
-            }
-          },
-          data: convertData(item[1])
-        }, {
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          zlevel: 2,
-          rippleEffect: { //涟漪特效
-            period: 4, //动画时间，值越小速度越快
-            brushType: 'stroke', //波纹绘制方式 stroke, fill
-            scale: 4 //波纹圆环最大限制，值越大波纹越大
-          },
-          label: {
-            normal: {
+    [['顺义校区', chinaDatas]].forEach(function(item, i) {
+        console.log(item)
+        series.push({
+            type: 'lines',
+            zlevel: 2,
+            effect: {
               show: true,
-              position: 'right', //显示位置
-              offset: [5, 0], //偏移设置
-              formatter: function(params){//圆环显示文字
-                return params.data.name;
-              },
-              fontSize: 13
+              period: 4, //箭头指向速度，值越小速度越快
+              trailLength: 0.02, //特效尾迹长度[0,1]值越大，尾迹越长重
+              symbol: 'arrow', //箭头图标
+              symbolSize: 5, //图标大小
             },
-            emphasis: {
-              show: true
-            }
-          },
-          symbol: 'circle',
-          symbolSize: function(val) {
-            return 5+ val[2] * 5; //圆环大小
-          },
-          itemStyle: {
-            normal: {
-              show: false,
-              color: '#f00'
-            }
-          },
-          data: item[1].map(function(dataItem) {
-            return {
-              name: dataItem[0].name,
-              value: chinaGeoCoordMap[dataItem[0].name].concat([dataItem[0].value])
-            };
-          }),
-        },
-        //被攻击点
-        {
-          type: 'scatter',
-          coordinateSystem: 'geo',
-          zlevel: 2,
-          rippleEffect: {
-            period: 4,
-            brushType: 'stroke',
-            scale: 4
-          },
-          label: {
-            normal: {
-              show: true,
-              position: 'right',
-              //offset:[5, 0],
-              color: '#0f0',
-              formatter: '{b}',
-              textStyle: {
-                color: "#0f0"
+            lineStyle: {
+              normal: {
+                width: 1, //尾迹线条宽度
+                opacity: 1, //尾迹线条透明度
+                curveness: .3 //尾迹线条曲直度
               }
             },
-            emphasis: {
-              show: true,
-              color: "#f60"
-            }
+            data: convertData(item[1])
+          }, {
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            zlevel: 2,
+            rippleEffect: { //涟漪特效
+              period: 4, //动画时间，值越小速度越快
+              brushType: 'stroke', //波纹绘制方式 stroke, fill
+              scale: 4 //波纹圆环最大限制，值越大波纹越大
+            },
+            label: {
+              normal: {
+                show: true,
+                position: 'right', //显示位置
+                offset: [5, 0], //偏移设置
+                formatter: function(params){//圆环显示文字
+                  return params.data.name;
+                },
+                fontSize: 13
+              },
+              emphasis: {
+                show: true
+              }
+            },
+            symbol: 'circle',
+            symbolSize: function(val) {
+              return 5+ val[2] * 5; //圆环大小
+            },
+            itemStyle: {
+              normal: {
+                show: false,
+                color: '#f00'
+              }
+            },
+            data: item[1].map(function(dataItem) {
+              return {
+                name: dataItem[0].name,
+                value: chinaGeoCoordMap[dataItem[0].name].concat([dataItem[0].value])
+              };
+            }),
           },
-          symbol: 'pin',
-          symbolSize: 50,
-          data: [{
-            name: item[0],
-            value: chinaGeoCoordMap[item[0]].concat([10]),
-          }],
-        }
-      );
-	});
+          //被攻击点
+          {
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            zlevel: 2,
+            rippleEffect: {
+              period: 4,
+              brushType: 'stroke',
+              scale: 4
+            },
+            label: {
+              normal: {
+                show: true,
+                position: 'right',
+                //offset:[5, 0],
+                color: '#0f0',
+                formatter: '{b}',
+                textStyle: {
+                  color: "#0f0"
+                }
+              },
+              emphasis: {
+                show: true,
+                color: "#f60"
+              }
+            },
+            symbol: 'pin',
+            symbolSize: 50,
+            data: [{
+              name: item[0],
+              value: chinaGeoCoordMap[item[0]].concat([10]),
+            }],
+          }
+        );
+    });
 
-	option = {
-    title: {
-      text: '来京路线 From',
-      textStyle: {
-        color: '#6d767e'
-      }
-    },
-		tooltip: {
-			trigger: 'item',
-			backgroundColor: '#eeeeee',
-			borderColor: '#eeeeee',
-			showDelay: 0,
-			hideDelay: 0,
-			enterable: true,
-			transitionDuration: 0,
-			extraCssText: 'z-index:100',
-			formatter: function(params, ticket, callback) {
-				//根据业务自己拓展要显示的内容
-				var res = "";
-				var name = params.name;
-				var value = params.value[params.seriesIndex + 1];
-				res = "<span style='color:#fff;'>" + name + "</span><br/>数据：" + value;
-				return res;
-			}
-		},
-		geo: {
-			map: 'china',
-			zoom: 1.2,
-			label: {
-				emphasis: {
-					show: false
-				}
-			},
-			roam: true, //是否允许缩放
-			itemStyle: {
-				normal: {
-					color: '#eeeeee', //地图背景色
-					borderColor: '#516a89', //省市边界线00fcff 516a89
-					borderWidth: 1
-				},
-				emphasis: {
-					color: 'rgba(37, 43, 61, .5)' //悬浮背景
-				}
-			}
-		},
-		series: series
-	};
+    option = {
+      title: {
+        text: '来京路线 From',
+        textStyle: {
+          color: '#6d767e'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: '#eeeeee',
+        borderColor: '#eeeeee',
+        showDelay: 0,
+        hideDelay: 0,
+        enterable: true,
+        transitionDuration: 0,
+        extraCssText: 'z-index:100',
+        formatter: function(params, ticket, callback) {
+          //根据业务自己拓展要显示的内容
+          var res = "";
+          var name = params.name;
+          var value = params.value[params.seriesIndex + 1];
+          res = "<span style='color:#fff;'>" + name + "</span><br/>数据：" + value;
+          return res;
+        }
+      },
+      geo: {
+        map: 'china',
+        zoom: 1.2,
+        label: {
+          emphasis: {
+            show: false
+          }
+        },
+        roam: true, //是否允许缩放
+        itemStyle: {
+          normal: {
+            color: '#eeeeee', //地图背景色
+            borderColor: '#516a89', //省市边界线00fcff 516a89
+            borderWidth: 1
+          },
+          emphasis: {
+            color: 'rgba(37, 43, 61, .5)' //悬浮背景
+          }
+        }
+      },
+      series: series
+    };
     myChart.setOption(option)
   }
 
-// 饼图
-function pieChart(pieData) {
-  const myChart = echarts.init(document.querySelector('.pie'));
-  let option = {
-    tooltip: {
-      formatter: '{a} <br />{b} <strong>{c}</strong>人 占比{d}%'
-    },
-    title: {
-      text: '籍贯 Hometown',
-      textStyle: {
-        color: '#6d767e'
+  // 饼图
+  function pieChart(pieData) {
+    const myChart = echarts.init(document.querySelector('.pie'));
+    let option = {
+      tooltip: {
+        formatter: '{a} <br />{b} <strong>{c}</strong>人 占比{d}%'
       },
-    },
-    series: [
-      {
-        name: '各地人员分布',
-        type: 'pie', // pie 表示饼图
-        radius: ['10%', '65%'], // 内外圈的半径
-        center: ['50%', '50%'], // 中心点
-        roseType: 'area', // area表示面积模式，radius表示半径模式
-        itemStyle: { // 每一项的设置
-          borderRadius: 4, // 扇形边缘圆角设置
+      title: {
+        text: '籍贯 Hometown',
+        textStyle: {
+          color: '#6d767e'
         },
-        data: pieData
-      }
-    ]
-  };
-  myChart.setOption(option)
-}
+      },
+      series: [
+        {
+          name: '各地人员分布',
+          type: 'pie', // pie 表示饼图
+          radius: ['10%', '65%'], // 内外圈的半径
+          center: ['50%', '50%'], // 中心点
+          roseType: 'area', // area表示面积模式，radius表示半径模式
+          itemStyle: { // 每一项的设置
+            borderRadius: 4, // 扇形边缘圆角设置
+          },
+          data: pieData
+        }
+      ]
+    };
+    myChart.setOption(option)
+  }
 }

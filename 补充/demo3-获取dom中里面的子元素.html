@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <a href="">aa</a>
+    </div>
+    <a href=""></a>
+    <script>
+        // 方式1
+        // document.querySelector('div a');
+        // 方式2
+        // 先获取div
+        const div = document.querySelector('div');
+        // 再获取div中寻找a标签
+        console.log(div.querySelector('a'));
+    </script>
+</body>
+</html>

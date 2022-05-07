@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        iframe {
+            width: 600px;
+            height: 600px;
+            background-color: #fff;
+            margin: 200px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>06页面</h1>
+    <!-- src想包含哪一个网页 -->
+    <!-- 给iframe标签添加一个name属性 -->
+    <!-- 给a标签添加一个target属性：属性值等于iframe标签的name的属性值 -->
+    <div>
+        <a target="contain"  href="./demo7-被包含的网页.html">07</a>
+        <a target="contain" href="./demo8-被包含的网页.html">08</a>
+        <a target="contain" href="./demo9-被包含的网页 .html">09</a>
+    </div>
+    <iframe src="./demo7-被包含的网页.html" name="contain" frameborder="0"></iframe>
+</body>
+</html>

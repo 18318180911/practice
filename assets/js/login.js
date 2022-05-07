@@ -111,11 +111,6 @@ window.onload = function () {
       setTimeout(() => {
           location.href = './index.html'
       }, 1500);
-      // console.log("登录成功");
-      //  调整到的在后台页面- 敏感数据
     });
-//     axios.get('/student/list').then((resutl) => {
-//         console.log(resutl);
-//       });
   });
 }
